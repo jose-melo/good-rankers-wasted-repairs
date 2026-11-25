@@ -1,4 +1,4 @@
-# Good Rankers, Wasted Repairs: Scoring Feature-Shift Localisers by the Repairs They Waste
+# Good Rankers, Wasted Repairs: Feature-Shift Localisers and the Repairs They Waste
 
 Code and results of the paper. A feature-shift localiser compares a reference sample with a recent window and names
 the features in which a shift originates, so that they can be inspected or repaired. Each intact feature it names is a
@@ -98,8 +98,8 @@ test), `CLF` (classifier), `FSL` (FSL-Net), `KS_B` and `COND_B` (calibrated on b
 
 ```bibtex
 @inproceedings{goodrankers2027,
-  title     = {Good Rankers, Wasted Repairs: Scoring Feature-Shift Localisers by the Repairs They Waste},
-  author    = {De Melo Costa, J. L. and others},
+  title     = {Good Rankers, Wasted Repairs: Feature-Shift Localisers and the Repairs They Waste},
+  author    = {De Melo Costa, Jos{\'e} Lucas and Rimmel, {\'A}rp{\'a}d and Popineau, Fabrice and Doan, Bich-Li{\^e}n and Pinto Sousa, Marcos Levi and Pedroso, Murilo},
   booktitle = {European Symposium on Artificial Neural Networks, Computational Intelligence and Machine Learning (ESANN)},
   year      = {2027},
   note      = {Under review}
