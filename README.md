@@ -17,7 +17,7 @@ w = 250), the conditional test and ours rank x3 first about equally often (0.97,
 under 0.01 of windows; arrows: better direction.*
 
 The testbeds, the verdict rule and the settings of every localiser are detailed in the
-[supplementary note](SUPPLEMENT.md).
+[`DETAILS.md`](DETAILS.md).
 
 ## Installation
 
@@ -99,7 +99,7 @@ test), `CLF` (classifier), `FSL` (FSL-Net), `KS_B` and `COND_B` (calibrated on b
 ```bibtex
 @inproceedings{goodrankers2027,
   title     = {Good Rankers, Wasted Repairs: Feature-Shift Localisers and the Repairs They Waste},
-  author    = {De Melo Costa, Jos{\'e} Lucas and Rimmel, {\'A}rp{\'a}d and Popineau, Fabrice and Doan, Bich-Li{\^e}n and Pinto Sousa, Marcos Levi and Pedroso, Murilo},
+  author    = {De Melo Costa, Jos{\'e} Lucas and Pinto Sousa, Marcos Levi and Pedroso, Murilo and Rimmel, {\'A}rp{\'a}d and Popineau, Fabrice and Doan, Bich-Li{\^e}n},
   booktitle = {European Symposium on Artificial Neural Networks, Computational Intelligence and Machine Learning (ESANN)},
   year      = {2027},
   note      = {Under review}

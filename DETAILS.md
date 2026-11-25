@@ -1,4 +1,4 @@
-# Supplementary note: testbeds, verdict rule and localiser settings
+# Testbeds, verdict rule and localiser settings
 
 This note details each testbed and localiser of the paper. Every number below is reproduced by the code of this
 repository; the files named are the ones that define or compute it.
