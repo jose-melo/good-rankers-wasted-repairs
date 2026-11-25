@@ -1,0 +1,8 @@
+wind_tunnel multi 0 --localisers KS,COND,LOO,ARM,CLF,FSL,KS_B,COND_B
+wind_tunnel multi 1 --localisers KS,COND,LOO,ARM,CLF,FSL,KS_B,COND_B
+wind_tunnel multi 2 --localisers KS,COND,LOO,ARM,CLF,FSL,KS_B,COND_B
+wind_tunnel multi 3 --localisers KS,COND,LOO,ARM,CLF,FSL,KS_B,COND_B
+wind_tunnel multi 4 --localisers KS,COND,LOO,ARM,CLF,FSL,KS_B,COND_B
+wind_tunnel multi 5 --localisers KS,COND,LOO,ARM,CLF,FSL,KS_B,COND_B
+wind_tunnel multi 6 --localisers KS,COND,LOO,ARM,CLF,FSL,KS_B,COND_B
+wind_tunnel multi 7 --localisers KS,COND,LOO,ARM,CLF,FSL,KS_B,COND_B

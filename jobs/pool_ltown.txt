@@ -1,0 +1,6 @@
+ltown ltown 0 --localisers CLF,FSL --types none
+ltown ltown 1 --localisers CLF,FSL --types none
+ltown ltown 2 --localisers CLF,FSL --types none
+ltown ltown 3 --localisers CLF,FSL --types none
+ltown ltown 4 --localisers CLF,FSL --types none
+ltown ltown 5 --localisers CLF,FSL --types none

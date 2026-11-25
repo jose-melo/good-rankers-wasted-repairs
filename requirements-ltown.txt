@@ -1,0 +1,6 @@
+# L-Town simulations (scripts/simulate_ltown.py), Python 3.14, in their own environment
+numpy==2.5.5
+scipy==1.18.1
+pandas==3.1.1
+PyYAML==6.0.4
+wntr==1.5.0
