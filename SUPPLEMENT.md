@@ -20,7 +20,8 @@ value; onset (`half`) adds ±3 sd from the middle of the window; broken dependen
 values from other pool rows, keeping its marginal; `two` and `many` add ±3 sd to 2 and to max(2, ⌊d/2⌋) features;
 value-dependent (`valdep`, w = 1) offsets by 3 sd the strongest correlate of the row's most extreme feature; selection
 draws rows with a probability that depends on one feature and acts on nothing. S holds the corrupted features; under
-selection S is empty; under a propagating change S holds the shifted feature.
+selection S is empty; under a propagating change S holds the shifted feature. On L-Town, onset adds 1 sd and broken
+dependence replays the sensor's own values from 168 h earlier.
 
 **Data sources.** Causal graphs are simulated (`testbeds/graphs.py`). CATS v2 (Fleith, Zenodo 10.5281/zenodo.8338435),
 thinned to one row every 10 s. L-Town: leak-free EPANET simulations of the BattLeDIM network (Vrachimis et al. 2022,

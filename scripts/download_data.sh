@@ -23,7 +23,7 @@ for ds in lt_walks_v1:dcad019186661a56de7a2d1db97fc2f0 wt_walks_v1:19bb4e92cbe0b
   check_md5 "$DATA/causal_chambers/$name.zip" "$sum"
   [ -d "$DATA/causal_chambers/$name" ] || unzip -q "$DATA/causal_chambers/$name.zip" -d "$DATA/causal_chambers"
 done
-# regime targets of the wind-tunnel experiments and the published graph (MIT licence)
+# regime targets of the wind-tunnel experiments and the published graph (CC BY 4.0; the graph file is MIT)
 get https://raw.githubusercontent.com/juangamella/causal-chamber/967d59a42956872f37463cc561ecf6e9ceab9364/datasets/wt_walks_v1/regimes_targets.py \
     "$DATA/causal_chambers/wt_meta/regimes_targets.py"
 get https://raw.githubusercontent.com/juangamella/causal-chamber-package/087725404b9bad99df3160a2b3bd7da250f44fe3/causalchamber/ground_truth/main.py \
@@ -38,7 +38,7 @@ check_md5 "$DATA/ltown/dataset_configuration.yaml" 48486401f5b4d0447023f5ce5d242
 
 # ARM (Peng et al., arXiv:2608.01691, CC BY 4.0): the authors' anc/arm_core.py, used unmodified
 if [ ! -s "$DATA/third_party/arm_core.py" ]; then
-  tmp=$(mktemp -d); curl -fL --retry 3 -o "$tmp/src.tar.gz" https://arxiv.org/src/2608.01691
+  tmp=$(mktemp -d); curl -fL --retry 3 -o "$tmp/src.tar.gz" https://arxiv.org/src/2608.01691v1
   tar -xzf "$tmp/src.tar.gz" -C "$tmp" anc/arm_core.py && cp "$tmp/anc/arm_core.py" "$DATA/third_party/arm_core.py"
   rm -rf "$tmp"
 fi

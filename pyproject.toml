@@ -1,7 +1,7 @@
 [project]
 name = "wasted-repairs"
 version = "1.0.0"
-description = "Scoring feature-shift localisers by the repairs they waste"
+description = "Feature-shift localisers and the repairs they waste"
 requires-python = ">=3.12"
 license = "MIT"
 

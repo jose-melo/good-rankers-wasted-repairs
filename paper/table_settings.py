@@ -11,7 +11,7 @@ SET = {"graphs": [("no change", "none", 0.0), ("offset 3\\,sd", "offset", 3.0), 
        "cats": [("no change", "none", 0.0), ("offset 3\\,sd", "offset_c", 3.0), ("broken dep.", "decoupled_c", 0.0)],
        "light_tunnel": [("no change", "none_iid", 0.0), ("offset 3\\,sd", "offset", 3.0),
                         ("broken dep.", "decoupled", 0.0)],
-       "ltown": [("no change", "none", 0.0), ("offset 1\\,m", "offset", 1.0), ("broken dep.", "decoupled", 0.0)],
+       "ltown": [("no change", "none", 0.0), ("offset 1\\,sd", "offset", 1.0), ("broken dep.", "decoupled", 0.0)],
        "wind_tunnel": [("no change", "none_c", 0.0), ("offset 3\\,sd", "offset_c", 3.0),
                        ("broken dep.", "decoupled_c", 0.0)]}
 TBHEAD = {"graphs": "Causal graphs ($w=250$, 160 units)", "cats": "CATS ($w=250$, 20 units)",

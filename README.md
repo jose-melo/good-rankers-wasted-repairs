@@ -109,4 +109,4 @@ test), `CLF` (classifier), `FSL` (FSL-Net), `KS_B` and `COND_B` (calibrated on b
 ## Licence
 
 MIT (see `LICENSE`). The downloaded data and third-party code keep their own licences: CATS, L-Town and the Causal
-Chambers data CC BY 4.0, the Causal Chambers scripts MIT, ARM's `arm_core.py` CC BY 4.0, FSL-Net CC BY-NC 4.0.
+Chambers data and regime files CC BY 4.0, the `causalchamber` package (published graph) MIT, ARM's `arm_core.py` CC BY 4.0, FSL-Net CC BY-NC 4.0.
