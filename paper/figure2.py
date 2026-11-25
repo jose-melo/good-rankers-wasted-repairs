@@ -5,28 +5,21 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 
-from common import (CM, COLW, FAULTS, GREY_TXT, INK, OURS, TBN, TBNAME, TBW, TESTBEDS, VERM, apply_style,
+from common import (CM, COLW, ENTS, FAULTS, GREY_TXT, INK, NA, OURS, RED, TBN, TBNAME, TBW, TESTBEDS, apply_style,
                     get, save)
 
 apply_style()
 plt.rcParams.update({"hatch.linewidth": 0.6, "hatch.color": "#4a4a4a"})
 
-ENTS = [("KS", "per-feature KS"), ("ARM", "ARM's rank test"), ("COND", "conditional test"),
-        ("CLF@cal", "classifier (cal.)"), ("FSL@0.5", "FSL-Net"), ("KS_B", "KS, block cal."),
-        ("COND_B", "conditional, block cal."), (OURS, "leave-one-out (ours)")]
-FC = {"within": "white", "undetermined": "#9A9A9A", "above": VERM}
-EC = {"within": INK, "undetermined": INK, "above": "#8a3a00"}
-# cells that cannot exist by construction: block calibration on independent rows (graphs) or without consecutive
-# calibration rows (light tunnel); the classifier and FSL-Net need windows of at least 20 rows (wind tunnel: w = 10)
-NA = {("graphs", "KS_B"), ("graphs", "COND_B"), ("light_tunnel", "KS_B"), ("light_tunnel", "COND_B"),
-      ("wind_tunnel", "CLF@cal"), ("wind_tunnel", "FSL@0.5")}
-FS_TICK, FS_ROW, FS_TTL, FS_SUB, FS_AX = 6.5, 7, 7, 6.5, 7
+FC = {"within": "white", "undetermined": "#D9D9D9", "above": RED}
+EC = {"within": INK, "undetermined": INK, "above": "#6e0f1a"}
+FS_TICK, FS_ROW, FS_TTL, FS_SUB, FS_AX = 7, 7.5, 7.5, 7, 7
 W = COLW
-LABW, PG = 2.62, 0.10
+LABW, PG = 2.78, 0.10
 PW = (W - LABW - 0.04 - PG * (len(TESTBEDS) - 1)) / len(TESTBEDS)
-RH = 0.335
+RH = 0.42
 AXH = RH * len(ENTS)
-TOPH = 0.82
+TOPH = 0.90
 H = TOPH + AXH + 0.42 + 0.30 + 0.32
 fig = plt.figure(figsize=(W * CM, H * CM))
 bg = fig.add_axes([0, 0, 1, 1]); bg.set_xlim(0, W); bg.set_ylim(0, H); bg.axis("off")
@@ -58,7 +51,7 @@ for g, tb in enumerate(TESTBEDS):
                 ax.text(0.40, r, "abstains", fontsize=FS_TICK, va="center", style="italic", color=GREY_TXT)
                 continue
             yo = r if f == 0 else r + off[f - 1]
-            ax.plot(sq(d["rate"]), yo, "D" if f == 0 else "o", ms=3.4 if f == 0 else 2.9, mfc=FC[d["verdict"]],
+            ax.plot(sq(d["rate"]), yo, "D" if f == 0 else "o", ms=3.9 if f == 0 else 3.3, mfc=FC[d["verdict"]],
                     mec=EC[d["verdict"]], mew=0.45, zorder=4 if f == 0 else 3, clip_on=False)
         if not anyrow:
             ax.text(0.68, r, "not run", fontsize=FS_TICK, ha="center", va="center", color="#7a7a7a")
@@ -68,11 +61,12 @@ for g, tb in enumerate(TESTBEDS):
     for s in ("top", "right", "left"):
         ax.spines[s].set_visible(False)
     bg.text(px + PW / 2, H - 0.20, TBNAME[tb], ha="center", va="center", fontsize=FS_TTL, weight="bold")
-    bg.text(px + PW / 2, H - 0.44, TBW[tb], ha="center", va="center", fontsize=FS_SUB, color=GREY_TXT, style="italic")
-    bg.text(px + PW / 2, H - 0.66, TBN[tb], ha="center", va="center", fontsize=FS_SUB, color=GREY_TXT, style="italic")
+    bg.text(px + PW / 2, H - 0.47, TBW[tb], ha="center", va="center", fontsize=FS_SUB, color=GREY_TXT, style="italic")
+    bg.text(px + PW / 2, H - 0.72, TBN[tb], ha="center", va="center", fontsize=FS_SUB, color=GREY_TXT, style="italic")
 for r, (ent, nm) in enumerate(ENTS):
     y = AY + AXH - (r + 0.5) * RH
-    bg.text(0.04, y, nm, fontsize=FS_ROW, va="center", weight="bold" if ent == OURS else "normal")
+    bg.text(0.04, y, nm, fontsize=FS_ROW, va="center", weight="bold" if ent == OURS else "normal",
+            family="STIXGeneral" if ent == OURS else None)
 YAX = AY - 0.45
 bg.text(LABW + (W - LABW) / 2, YAX, "wasted-repair rate (square-root axis); dashed: the level .10",
         ha="center", va="center", fontsize=FS_AX)
@@ -84,7 +78,7 @@ def tw(t):
     return t.get_window_extent(rend).width * k
 
 
-x = LABW
+x = LABW - 0.50
 t = bg.text(x, ly, "shape:", fontsize=FS_AX, va="center", color=GREY_TXT); x += tw(t) + 0.10
 for mk, lab in [("D", "no change"), ("o", "a fault")]:
     bg.plot(x + 0.06, ly, mk, ms=3.4, mfc="white", mec=INK, mew=0.45)

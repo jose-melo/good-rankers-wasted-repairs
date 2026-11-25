@@ -1,13 +1,13 @@
-"""Figure 1. (1) A toy window: a fault replaces the recorded column of x3 in a chain x1 -> ... -> x5 (results/toy.json,
-written by paper/toy/toy.js). (2) The p-value of each feature for KS, the conditional test and ours, and the features
-Holm's procedure flags at .10. (3) Over all windows on the causal graphs (results/graphs.csv, broken dependence,
-w = 250): how often x3 is ranked first, the wasted-repair rate and the power."""
+"""Figure 1. (1) A toy window: a fault replaces the recorded column of x3 (results/toy.json, written by
+paper/toy/toy.js). (2) The p-value of each feature and the features Holm's procedure flags at .10. (3) Over all windows
+on the causal graphs (results/graphs.csv, broken dependence, w = 250): rank, wasted-repair rate and power."""
 import json
 import os
 
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.patches import ArrowStyle, Circle, FancyArrowPatch, FancyBboxPatch, Polygon, Rectangle
+from matplotlib.patches import ArrowStyle, Circle, FancyArrowPatch, FancyBboxPatch, PathPatch, Polygon, Rectangle
+from matplotlib.path import Path as MPath
 
 from common import CM, COL, EDGE, GREY_TXT, INK, RESULTS, apply_style, get, save
 
@@ -98,13 +98,6 @@ class Fig:
         self.T(x0 + 0.25, cy - 0.006, str(n), color="white", ha="center", fontweight="bold", fontsize=6.5, zorder=3)
         self.T(x0 + 0.47, cy, title, fontsize=fs, zorder=3)
 
-    def chevron(self, xa, xb, y, color):
-        cx = (xa + xb) / 2
-        t, hh, d = 0.075, 0.17, 0.10
-        pts = [(cx - d / 2 - t / 2, y + hh), (cx + d / 2 + t / 2, y), (cx - d / 2 - t / 2, y - hh),
-               (cx - d / 2 - t / 2 - t, y - hh), (cx + d / 2 - t / 2, y), (cx - d / 2 - t / 2 - t, y + hh)]
-        self.ax.add_patch(Polygon([(px + t / 2, py) for px, py in pts], closed=True, fc=color, ec="none", zorder=5))
-
     def bbox_cm(self, t):
         self.fig.canvas.draw()
         e = t.get_window_extent(self.fig.canvas.get_renderer())
@@ -119,7 +112,7 @@ def squiggle(F, cx, cy, half=0.1, amp=0.03, color="white", lw=0.8, seed=0.0):
 
 
 def scatter_slope(F, x, y, sz, which, s=0.9):
-    """x3 against x2 in the reference or the window, with the least-squares line; returns the correlation string."""
+    """x3 against x2 in the reference or the window, with the least-squares line and the correlation."""
     xs, ys = (TOY["ref_x2"], TOY["ref_x3"]) if which == "ref" else (TOY["win_x2"], TOY["win_x3"])
     xs, ys = np.asarray(xs), np.asarray(ys)
     col, al = ("#7a7a7a", 0.55) if which == "ref" else (INK, 0.75)
@@ -133,7 +126,9 @@ def scatter_slope(F, x, y, sz, which, s=0.9):
     b, a = np.polyfit(xs, ys, 1)
     t = np.array([-3.0, 3.0])
     ax.plot(t, a + b * t, color=INK, lw=0.8, solid_capstyle="round")
-    return f"{r:.2f}".replace("-0.00", "0.00").replace("0.", ".", 1)
+    rs = f"{r:.2f}".replace("-0.00", "0.00").replace("0.", ".", 1)
+    ax.text(0.96, 0.05, f"corr {rs}", transform=ax.transAxes, ha="right", va="bottom", fontsize=6.8, color=INK,
+            bbox=dict(boxstyle="square,pad=0.12", fc="white", ec="none", alpha=0.9), zorder=6)
 
 
 def node(F, x, y, j, R=0.115, fs=6.5, ls="-"):
@@ -156,7 +151,7 @@ def x3_head(F, cx, cy, w=0.27, h=0.2, fs=6.5):
     F.T(cx, cy, "$x_3$", ha="center", fontsize=fs, color="white", zorder=5)
 
 
-def table(F, x, y0, cw, rh, n_ref, n_win, gap, side_fs, side_dx, seed=4):
+def table(F, x, y0, cw, rh, n_ref, n_win, gap, seed=4):
     """Reference rows, a dashed separator, window rows whose x3 cells are black with a white squiggle."""
     rng = np.random.default_rng(seed)
     F.ax.plot([x, x + D * cw], [y0, y0], color=INK, lw=0.6, solid_capstyle="butt")
@@ -181,9 +176,6 @@ def table(F, x, y0, cw, rh, n_ref, n_win, gap, side_fs, side_dx, seed=4):
     F.ax.plot([x, x + D * cw], [yb, yb], color=INK, lw=0.6, solid_capstyle="butt")
     for k in range(1, D):
         F.ax.plot([x + k * cw] * 2, [yb, y0], color="#dcdcdc", lw=0.3, zorder=0)
-    xr = x + D * cw + side_dx
-    F.T(xr, (y0 + y_ref_bot) / 2, "ref.", fontsize=side_fs, color=GREY_TXT)
-    F.T(xr, (y_ref_bot - gap + yb) / 2, "window", fontsize=side_fs, color=GREY_TXT)
     return yb
 
 
@@ -214,11 +206,11 @@ def key_line(F, x, y, fs=7, sep=1.20, s=0.14):
 def main():
     OW, M = one_window(), metrics()
     SETS = holm_sets(OW)
-    W, H = 12.2, 4.4
+    W, H = 12.2, 5.3
     F = Fig(W, H)
     y0, h = 0.03, H - 0.06
-    g = 0.18
-    widths = [4.42, 5.10]
+    g = 0.40
+    widths = [4.00, 5.10]
     widths.append(W - 0.04 - sum(widths) - 2 * g)
     xs = [0.02]
     for w in widths:
@@ -228,7 +220,7 @@ def main():
     top = y0 + h
     Y_RULE = top - 1.55
     Y_HB = Y_RULE + 0.06
-    Y_ROWS = [Y_RULE - 0.38 - i * 0.72 for i in range(3)]
+    Y_ROWS = [Y_RULE - 0.50 - i * 1.00 for i in range(3)]
     Y_FOOT = y0 + 0.30
 
     # 1 Data
@@ -255,23 +247,24 @@ def main():
     F.ax.plot([cx[2]] * 2, [s0, s1], color=INK, lw=0.55, ls=(0, (1.4, 1.0)))
     ym = (s0 + s1) / 2
     F.ax.plot([cx[2] - 0.06, cx[2] + 0.06], [ym - 0.035, ym + 0.035], color=INK, lw=0.9, solid_capstyle="round")
-    rh, tgap = 0.32, 0.14
+    rh, tgap = 0.47, 0.24
     ttop = yh - 0.24
-    yb = table(F, tx, ttop, cw, rh, 3, 3, gap=tgap, side_fs=7, side_dx=0.07)
+    yb = table(F, tx, ttop, cw, rh, 3, 3, gap=tgap)
     yc_ref = ttop - 1.5 * rh
     yc_win = ttop - 3 * rh - tgap - 1.5 * rh
     F.T(cx[2], yb - 0.24, "recorded $x_3$", ha="center", fontsize=7, color=GREY_TXT)
-    sz = 0.80
-    sx = x1 + 3.08
-    for which, yc in [("ref", yc_ref), ("win", yc_win)]:
-        rs = scatter_slope(F, sx, yc - sz / 2, sz, which, s=0.8)
-        F.T(sx + sz + 0.06, yc, f"corr\n{rs}", ha="left", fontsize=7.2, linespacing=1.0)
-    F.T(sx + sz / 2, yc_win - sz / 2 - 0.12, "$x_2$", ha="center", fontsize=7)
-    F.T(sx - 0.04, yc_ref + sz / 2 - 0.09, "$x_3$", ha="right", fontsize=7)
+    sz = 1.14
+    sx = x1 + 2.46
+    for which, yc, lab in [("ref", yc_ref, "ref."), ("win", yc_win, "window")]:
+        sy = yc - sz / 2 - 0.12
+        scatter_slope(F, sx, sy, sz, which, s=1.3)
+        F.T(sx, sy + sz + 0.13, lab, ha="left", fontsize=7.5)
+        F.T(sx - 0.05, sy + sz - 0.10, "$x_3$", ha="right", fontsize=7)
+    F.T(sx + sz / 2, yc_win - sz / 2 - 0.12 - 0.13, "$x_2$", ha="center", fontsize=7)
 
     # 2 Computing p-values
     F.panel(x2, y0, w2, h, 2, "Computing p-values", rule=0.50, fs=8.5)
-    cw2, rh2 = 0.455, 0.38
+    cw2, rh2 = 0.455, 0.46
     X0 = x2 + 1.51
     grid_r = X0 + D * cw2
     yx = Y_HB + 0.10
@@ -281,7 +274,7 @@ def main():
         else:
             F.T(X0 + (j + 0.5) * cw2, yx, f"$x_{j+1}$", ha="center", fontsize=7.5)
     F.ax.plot([x2 + 0.04, x2 + w2 - 0.04], [Y_RULE] * 2, color=RULE, lw=0.5)
-    set_txt = {}
+    set_txt, set_right = {}, []
     for i, (k, e) in enumerate(KEYS):
         set_txt[e] = F.T(0, Y_ROWS[i], SETS[e], ha="center", fontsize=7)
     wmax = max(F.bbox_cm(t)[2] - F.bbox_cm(t)[0] for t in set_txt.values())
@@ -307,19 +300,21 @@ def main():
         x = max(RS - sum(ws) / 2, grid_r + 0.10)
         for o, w_ in zip(objs, ws):
             o.set_x(x); x += w_
+        set_right.append(x)
     F.T(RS, Y_HB, "flagged\nfeatures", ha="center", va="bottom", fontsize=7, color=GREY_TXT, linespacing=0.95)
     for i, (k, e) in enumerate(KEYS):
         yc = Y_ROWS[i]
         swatch_label(F, x2 + 0.04, yc, e, fs=7, s=0.15)
-        pcell_row(F, X0, yc, cw2, rh2, OW[e], fs=6.3, inset=0.022)
+        pcell_row(F, X0, yc, cw2, rh2, OW[e], fs=6.8, inset=0.022)
     key_line(F, x2 + 0.12, Y_FOOT, sep=1.40)
 
     # 3 All windows
     F.panel(x3, y0, w3, h, 3, "All windows", rule=0.50, fs=8.5)
-    lx = x3 + 0.04
+    dx3 = 0.07
+    lx = x3 + 0.04 + dx3
     up, down = "$\\uparrow$", "$\\downarrow$"
     cols = [("$x_3$\nfirst", "hit1", up), ("wasted\nrepair", "rate", down), ("power", "power", up)]
-    cx_ = [x3 + 0.44, x3 + 1.14, x3 + 1.90]
+    cx_ = [x3 + 0.44 + dx3, x3 + 1.16, x3 + 1.90]
     yh2 = Y_HB + 0.30
     for (lab, _, arr), c in zip(cols, cx_):
         F.T(c, yh2, lab, ha="center", va="bottom", fontsize=7, color="#333333", linespacing=1.05)
@@ -333,12 +328,32 @@ def main():
         b = "bold" if rid == "OURS" else "normal"
         for (_, kk, _a), c in zip(cols, cx_):
             hot = (rid == "KS" and kk == "power") or (rid == "FULL" and kk == "rate")
-            F.T(c, yc, fmt(d[kk]), ha="center", fontsize=8, fontweight=b, color=RED if hot else INK)
+            F.T(c, yc, fmt(d[kk]), ha="center", fontsize=8.5, fontweight=b, color=RED if hot else INK)
 
-    for xa, xb in [(x1 + w1, x2), (x2 + w2, x3)]:
-        F.chevron(xa, xb, Y_HB + 0.30, color="#9d9d98")
+    # flow: the window scatter feeds the three tests; each flagged set feeds its row of metrics
+    fc_, lw_, hl, hw, rc = "#4a4a4a", 1.0, 0.15, 0.085, 0.10
+
+    def head(xb, yb):
+        F.ax.add_patch(Polygon([(xb, yb), (xb - hl, yb + hw), (xb - hl * 0.72, yb), (xb - hl, yb - hw)], closed=True,
+                               fc=fc_, ec=fc_, lw=0.3, joinstyle="miter", zorder=6))
+
+    def seg(pts):
+        F.ax.plot([q[0] for q in pts], [q[1] for q in pts], color=fc_, lw=lw_, solid_capstyle="butt", zorder=5)
+
+    win_r, x_in = sx + sz, x2 - 0.035
+    spine = (win_r + x2) / 2 + 0.02
+    ya, yt = Y_ROWS[2], Y_ROWS[0]
+    seg([(win_r + 0.05, ya), (x_in - hl * 0.6, ya)]); head(x_in, ya)
+    verts = [(spine, ya), (spine, yt - rc), (spine, yt), (spine + rc, yt), (x_in - hl * 0.6, yt)]
+    codes = [MPath.MOVETO, MPath.LINETO, MPath.CURVE3, MPath.CURVE3, MPath.LINETO]
+    F.ax.add_patch(PathPatch(MPath(verts, codes), fc="none", ec=fc_, lw=lw_, zorder=5))
+    head(x_in, yt)
+    seg([(spine, Y_ROWS[1]), (x_in - hl * 0.6, Y_ROWS[1])]); head(x_in, Y_ROWS[1])
+    a2 = max(set_right + [F.bbox_cm(t)[2] for t in set_txt.values()]) + 0.06
+    for yy in Y_ROWS:
+        seg([(a2, yy), (lx - 0.07 - hl * 0.6, yy)]); head(lx - 0.07, yy)
     yo = Y_ROWS[2]
-    F.ax.add_patch(FancyBboxPatch((x2 + 0.04, yo - 0.26), x3 + w3 - 0.04 - (x2 + 0.04), 0.52,
+    F.ax.add_patch(FancyBboxPatch((x2 + 0.04, yo - 0.32), x3 + w3 - 0.04 - (x2 + 0.04), 0.64,
                                   boxstyle="round,pad=0,rounding_size=0.08", fc="#efefec", ec="none", zorder=0))
     save(F.fig, "figure1")
 

@@ -12,7 +12,7 @@ OUT = os.path.join(ROOT, "paper", "out")
 
 INK = "#1a1a1a"
 GREY_TXT = "#4a4a4a"
-VERM = "#D55E00"
+RED = "#B2182B"
 CM = 1 / 2.54
 COLW = 12.2
 COL = {"KS": "#0072B2", "ARM": "#56B4E9", "COND": "#F0E442", "CLF@cal": "#CC79A7", "FSL@0.5": "#009E73",
@@ -55,6 +55,15 @@ FAULTS = [
     ("propagating, 3 sd", {"graphs": ("propagating", 3.0), "cats": None, "light_tunnel": None, "ltown": None,
                            "wind_tunnel": None}),
 ]
+
+# rows of Figures 2 and 3
+ENTS = [("KS", "per-feature KS"), ("ARM", "ARM's rank test"), ("COND", "conditional test"),
+        ("CLF@cal", "classifier (cal.)"), ("FSL@0.5", "FSL-Net"), ("KS_B", "KS, block cal."),
+        ("COND_B", "conditional, block cal."), (OURS, "leave-one-out (ours)")]
+# cells that cannot exist by construction: block calibration on independent rows (graphs) or without consecutive
+# calibration rows (light tunnel); the classifier and FSL-Net need windows of at least 20 rows (wind tunnel: w = 10)
+NA = {("graphs", "KS_B"), ("graphs", "COND_B"), ("light_tunnel", "KS_B"), ("light_tunnel", "COND_B"),
+      ("wind_tunnel", "CLF@cal"), ("wind_tunnel", "FSL@0.5")}
 
 _DF = {}
 

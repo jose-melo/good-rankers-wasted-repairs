@@ -5,5 +5,6 @@ cd "$(dirname "$0")"
 PY=${PYTHON:-python}
 $PY figure1.py
 $PY figure2.py
+$PY figure3.py
 $PY table_settings.py
 $PY text_numbers.py
